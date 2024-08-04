@@ -1,21 +1,4 @@
-# Constants
-class Types:
-    def __init__(self) -> None:
-        self.DIGITS = '0123456789'
-
-        self._INT = 'INT'
-        self._FLOAT = 'FLOAT'
-        self._STR = 'STRING'
-        self._PLUS = 'PLUS'
-        self._MINUS = 'MINUS'
-        self._MUL = 'MUL'
-        self._DIV = 'DIV'
-        self._OPARAN = 'OPARAN'
-        self._CPARAN = 'CPARAN'
-        self._VAR = 'VARIABLE'
-        self._PRINT = 'PRINT'
-        self._MAP = {'+': self._PLUS, '-': self._MINUS, '*': self._MUL, '/': self._DIV, '(': self._OPARAN, ')': self._CPARAN, '>': self._PRINT}
-
+from lib.type import Types
 # Error Handling
 class Position:
     def __init__(self, idx: int, ln: int, col: int) -> None:

@@ -1,5 +1,6 @@
 import os
 import sys
+import subprocess
 from lexical_parser import parseText
 from token_parse import Token_Parse
 from generator import Generator
@@ -24,8 +25,10 @@ def main(argv: list[str]) -> None:
     results = build(contents)
     file = open(os.getcwd()+"/"+argv[2], "w")
     file.write(results)
-    file.close
+    file.close()
 
+    subprocess.run(["nasm", "-felf64", "out.asm"])
+    subprocess.run(["ld", "-o", "out", "out.o"])
     print('file is successfully compiled')
     
 if __name__ == '__main__':
