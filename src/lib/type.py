@@ -15,5 +15,11 @@ class Types:
         self._PRINT = 'PRINT'
         self._RET = 'RETURN'
         self._EXIT = 'EXIT'
-        self._MAP = {'+': self._PLUS, '-': self._MINUS, '*': self._MUL, '/': self._DIV, '(': self._OPARAN, ')': self._CPARAN, '>': self._PRINT, 'return': self._RET, 'exit': self._EXIT}
+
+        self._OPERATORS = {'+': self._PLUS, '-': self._MINUS, '*': self._MUL, '/': self._DIV}
+        self._MAP = {'(': self._OPARAN, ')': self._CPARAN, '>': self._PRINT}
+        self._KEY_MAP = {'exit': self._EXIT, 'return': self._RET}
+    
+    def get_key_types(self) -> list[str]:
+        return self._KEY_MAP.values()
 
