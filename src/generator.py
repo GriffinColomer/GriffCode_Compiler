@@ -19,12 +19,11 @@ class Generator:
     def generate(self) -> str:
         interpretation = 'global _start\n_start:\n'
         while self.current_root:
+            # implement Variables. they should go into rax register than can be pushed to the stack
+            # to retirve get offset with stack pointer and push to top of stack then pop it to remove
+            # initial thoughts probably better way to do sleepy -_-
             if self.current_root.type == self.types._EXIT:
                 expr: token_parse.Node_Expr = self.current_root.get_expression()
                 interpretation += f'\tmov rax, 60\n\tmov rdi, {expr.get_left().get_value()}\n\tsyscall'
                 self.__advance()
         return interpretation    
-
-            # if self.root.expression.token.type == self.types._INT:
-            #     interpretation += f'\tmov rax, 60\n\tmov rdi, {self.root.expression.token.value}\n\tsyscall'
-            # return interpretation

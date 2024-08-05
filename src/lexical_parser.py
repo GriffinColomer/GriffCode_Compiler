@@ -1,4 +1,7 @@
 from lib.type import Types
+
+# Needs lots of cleaning - eventually get to it
+
 # Error Handling
 class Position:
     def __init__(self, idx: int, ln: int, col: int) -> None:

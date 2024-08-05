@@ -1,6 +1,7 @@
 from lexical_parser import Token, Types
 from typing import Self
 
+# Program Node for parse Tree, will be used to identify key functions exit, return, print, etc...
 class Node_Prog:
     def __init__(self, type = None, expr = None) -> None:
         self.expr = expr
@@ -18,6 +19,7 @@ class Node_Prog:
     def set_expression(self, expr):
         self.expr = expr
 
+# Main Leaf node to operators and numbers --add vaiable leaf soon
 class Leaf:
     def __init__(self, token: Token) -> None:
         self.token = token
@@ -36,6 +38,8 @@ class Leaf_Operator(Leaf):
     def __init__(self, token: Token) -> None:
         super().__init__(token)
         
+# Expression node used to represent what a program will use identified by waht is in between paratheses
+# also used to do addition and subtraction
 class Node_Expr:
     def __init__(self, left = None, right = None, operator = None) -> None:
         self.left: Self | Leaf = left
@@ -60,10 +64,12 @@ class Node_Expr:
     def set_operator(self, operator) -> None:
         self.operator = operator
         
+# Term Node used to do mult and div operations
 class Node_Term(Node_Expr):
     def __init__(self, left=None, right=None, operator=None) -> None:
         super().__init__(left, right, operator)
         
+# Big Class used to parse the list of tokens and create the list of program trees
 class Token_Parse:
     def __init__(self, tokens: list[Token]) -> None:
         self.types = Types()
@@ -72,6 +78,7 @@ class Token_Parse:
         self.current_token = None
         self.__advance()
 
+# Increment the current token
     def __advance(self) -> None:
         self.index += 1
         if self.index == len(self.tokens):
@@ -79,6 +86,9 @@ class Token_Parse:
         else:
             self.current_token = self.tokens[self.index]
 
+    # Makes sure program has a type, and creates an initial expression for the program
+    # Checks to make sure the program has parantheses and builds the tree recursively
+    # Once closing parantheses are reached the program tree is complete
     def __parse_expr(self, head: Node_Prog) -> None:
         if not head.get_type():
             head.set_expression(Node_Expr())
@@ -108,6 +118,8 @@ class Token_Parse:
                         break
             
 
+    # Is a driver function for the expression parsing function
+    # Makes a list of program nodes for generator to work with
     def parse(self) -> list[Node_Prog]:
         programs = [] 
         while self.current_token:
