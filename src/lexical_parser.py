@@ -78,7 +78,7 @@ class Lexar:
         while self.character and self.character.isalnum():
             word += self.character
             self.advance()
-        if self.types._KEY_MAP[word]:
+        if word in self.types._KEY_MAP.keys():
             return Token(self.types._KEY_MAP[word])
         return Token(self.types._VAR, word)
         
@@ -94,20 +94,20 @@ class Lexar:
     def make_tokens(self) -> tuple[list[Token], None | Error]:
         tokens: list[Token] = []
         while self.character != None:
-            if self.character in ' \t':
+            if self.character in ' \t\n':
                 self.advance()
             elif self.character in '>()':
                 tokens.append(Token(self.types._MAP[self.character]))
                 self.advance()
             elif self.character in self.types._OPERATORS.keys():
                 tokens.append(Token(self.types._OPERATORS[self.character]))
+                self.advance()
             elif self.character in '"\'':
                 tokens.append(self.__make_string())
             elif self.character in self.types.DIGITS:
                 tokens.append(self.__make_number())
             elif self.character.isalpha():
                 tokens.append(self.__make_key_word())
-        
             else:
                 return [], IllegalCharError(f'\'{self.character}\'', self.pos)
         return tokens, None

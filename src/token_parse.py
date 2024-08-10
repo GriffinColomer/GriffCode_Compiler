@@ -86,6 +86,12 @@ class Token_Parse:
         else:
             self.current_token = self.tokens[self.index]
 
+    def __set_node(self, node: Node_Expr | Node_Term, new_node: Leaf):
+        if not node.get_left():
+            node.set_left(new_node)
+        else:
+            node.set_right(new_node)
+
     # Makes sure program has a type, and creates an initial expression for the program
     # Checks to make sure the program has parantheses and builds the tree recursively
     # Once closing parantheses are reached the program tree is complete
@@ -95,28 +101,28 @@ class Token_Parse:
             head.set_type(self.current_token.type)
         self.__advance()
         current_node: Node_Expr | Node_Term = head.get_expression()
-        if self.current_token.type == self.types._OPARAN:
+        var_name: Token = None
+        if self.current_token.type == self.types._VAR:
+            var_name = self.current_token
             self.__advance()
+        if self.current_token.type == self.types._OPARAN or self.current_token.type == self.types._EQUALS or self.current_token.type == self.types._VAR:
+            self.__advance()
+            if self.current_token and self.current_token.type == self.types._VAR:
+                self.__set_node(current_node, Node_Expr(Leaf_Factor(self.current_token), operator = Leaf_Operator(var_name)))
+                self.__advance()
             while self.current_token and self.current_token.type not in self.types.get_key_types():
-                if not current_node.get_left():
-                    if self.current_token.type == self.types._INT:
-                        current_node.set_left(Leaf_Factor(self.current_token))
-                        self.__advance()
-                    elif self.current_token.type == self.types._OPARAN:
-                        current_node.set_left(Node_Expr())
-                        self.__parse_expr(current_node.left())
-                    elif self.current_token.type == self.types._CPARAN:
-                        break
-                elif not current_node.get_right():
-                    if self.current_token.type == self.types._INT:
-                        current_node.set_right(Leaf_Factor(self.current_token))
-                        self.__advance()
-                    elif self.current_token.type == self.types._OPARAN:
-                        current_node.set_right(Node_Expr())
-                        self.__parse_expr(current_node.right())
-                    elif self.current_token.type == self.types._CPARAN:
-                        break
-            
+                if self.current_token.type == self.types._INT:
+                    self.__set_node(current_node, Node_Expr(Leaf_Factor(self.current_token), operator = Leaf_Operator(var_name)))
+                    self.__advance()
+                elif self.current_token.type == self.types._INT:
+                    self.__set_node(current_node, Leaf_Factor(self.current_token))
+                    self.__advance()
+                elif self.current_token.type == self.types._OPARAN:
+                    self.__set_node(current_node, Node_Expr())
+                    self.__parse_expr(current_node.left())
+                elif self.current_token.type == self.types._CPARAN:
+                    break
+                                
 
     # Is a driver function for the expression parsing function
     # Makes a list of program nodes for generator to work with
@@ -128,6 +134,7 @@ class Token_Parse:
             if(self.current_token.type in self.types.get_key_types()):
                 self.__parse_expr(current_node)
                 programs.append(head)
-            self.__advance()
+            else:
+                self.__advance()
         return programs
     
